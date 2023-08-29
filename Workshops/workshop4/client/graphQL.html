@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachers and Courses</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Teachers and Courses</h1>
+  </header>
+
+  <main>
+    <div class="teachers">
+      <h2>Teachers</h2>
+      <table class="teacher-table">
+        <thead>
+          <tr>
+            <th>Nombre Profesor</th>
+            <th>Cedula</th>
+            <th>Edad</th>
+          </tr>
+        </thead>
+        <tbody class="teacher-container"></tbody>
+      </table>
+    </div>
+
+    <div class="courses">
+      <h2>Cursos</h2>
+      <table class="course-table">
+        <thead>
+          <tr>
+            <th>Nombre Curso</th>
+            <th>Creditos</th>
+          </tr>
+        </thead>
+        <tbody class="course-container"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
