@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 4 - Consume API</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #ccc; /* Agrega un borde a la tabla */
+    }
+    th, td {
+      border: 1px solid #ccc; /* Agrega bordes a las celdas */
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Resultados de los profesores:</h3>
+  <button onclick="getHelloWorld();">Ver profesores</button>
+  <button onclick="limpiarPantalla();">Limpiar</button>
+  <table id="result">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Créditos</th>
+        <th>Profesor</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const completed = (e) => {
+      const data = JSON.parse(e.target.responseText);
+      const tableBody = document.querySelector('#result tbody');
+
+      data.forEach((item, index) => {
+        const nombre = item.name;
+        const credits = item.credits;
+        const teacher = item.teacher;
+        const teacherFirstName = teacher ? teacher.first_name : 'N/A';
+        const teacherLastName = teacher ? teacher.last_name : 'N/A';
+
+        const row = document.createElement('tr');
+        const nombreCell = document.createElement('td');
+        const creditsCell = document.createElement('td');
+        const teacherCell = document.createElement('td');
+
+        nombreCell.textContent = nombre;
+        creditsCell.textContent = credits;
+        teacherCell.textContent = `${teacherFirstName} ${teacherLastName}`;
+
+        row.appendChild(nombreCell);
+        row.appendChild(creditsCell);
+        row.appendChild(teacherCell);
+
+        tableBody.appendChild(row);
+      });
+    };
+
+    const error = (e) => console.log(e.target.responseText);
+
+    function getHelloWorld() {
+      const ajaxRequest = new XMLHttpRequest();
+      ajaxRequest.addEventListener('load', completed);
+      ajaxRequest.addEventListener('error', error);
+      ajaxRequest.open('GET', 'http://localhost:3001/api/courses');
+      ajaxRequest.send();
+    }
+
+    function limpiarPantalla() {
+      const tableBody = document.querySelector('#result tbody');
+      tableBody.innerHTML = '';
+    }
+  </script>
+</body>
+
+</html>

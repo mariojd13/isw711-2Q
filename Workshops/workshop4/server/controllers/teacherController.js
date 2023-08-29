@@ -1,0 +1,173 @@
+const Teacher = require("../models/teacherModel");
+
+/**
+ * Creates a teacher
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+const teacherPost = (req, res) => {
+  let teacher = new Teacher();
+
+  teacher.first_name = req.body.first_name;
+  teacher.last_name  = req.body.last_name;
+  teacher.cedula = req.body.cedula;
+  teacher.age = req.body.age;
+
+  if (teacher.first_name && teacher.last_name) {
+    teacher.save(function (err) {
+      if (err) {
+        res.status(422);
+        console.log('error while saving the teacher', err);
+        res.json({
+          error: 'There was an error saving the teacher'
+        });
+      }
+      res.status(201); // CREATED
+      res.header({
+        'location': `/api/teachers/?id=${teacher.id}`
+      });
+      res.json(teacher);
+    });
+  } else {
+    res.status(422);
+    console.log('error while saving the teacher')
+    res.json({
+      error: 'No valid data provided for teacher'
+    });
+  }
+};
+
+/**
+ * Get all teachers
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+const teacherGet = (req, res) => {
+  // if an specific teacher is required
+  if (req.query && req.query.id) {
+    Teacher.findById(req.query.id, function (err, teacher) {
+      if (err) {
+        res.status(404);
+        console.log('error while queryting the teacher', err)
+        res.json({ error: "Teacher doesnt exist" })
+      }
+      res.json(teacher);
+    });
+  } else {
+    // get all teachers
+    Teacher.find(function (err, teachers) {
+      if (err) {
+        res.status(422);
+        res.json({ "error": err });
+      }
+      res.json(teachers);
+    });
+
+  }
+};
+
+/**
+ * Updates a teacher
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+const teacherPatch = (req, res) => {
+  // get teacher by id
+  if (req.query && req.query.id) {
+    Teacher.findById(req.query.id, function (err, teacher) {
+      if (err) {
+        res.status(404);
+        console.log('error while queryting the teacher', err)
+        res.json({ error: "Teacher doesnt exist" })
+      }
+
+      // update the teacher object (patch)
+      teacher.first_name = req.body.first_name ? req.body.first_name : teacher.first_name;
+      teacher.last_name = req.body.last_name ? req.body.last_name : teacher.last_name;
+      //teacher.cedula = req.body.cedula ? req.body.cedula : teacher.cedula;
+      teacher.age = req.body.age ? req.body.age : teacher.age;
+      // update the teacher object (put)
+      // teacher.first_name = req.body.first_name
+      // teacher.last_name = req.body.last_name
+
+      teacher.save(function (err) {
+        if (err) {
+          res.status(422);
+          console.log('error while saving the teacher', err)
+          res.json({
+            error: 'There was an error saving the teacher'
+          });
+        }
+        res.status(200); // OK
+        res.json(teacher);
+      });
+    });
+  } else {
+    res.status(404);
+    res.json({ error: "Teacher doesnt exist" })
+  }
+};
+
+/**
+ * Deletes a teacher
+ *
+ * @param {*} req
+ * @param {*} res
+ */
+ const teacherDelete = (req, res) => {
+  // get teacher by id
+  if (req.query && req.query.id) {
+    Teacher.findById(req.query.id, function (err, teacher) {
+      if (err) {
+        res.status(404);
+        console.log('error while queryting the teacher', err)
+        res.json({ error: "Teacher doesnt exist" })
+      }
+
+      teacher.deleteOne(function (err) {
+        if (err) {
+          res.status(422);
+          console.log('error while deleting the teacher', err)
+          res.json({
+            error: 'There was an error deleting the teacher'
+          });
+        }
+        res.status(204); //No content
+        res.json({});
+      });
+    });
+  } else {
+    res.status(404);
+    res.json({ error: "Teacher doesnt exist" })
+  }
+};
+
+const teacherGetById = async (args) => {
+  try {
+    const teacher = await Teacher.findById(args.id).exec();
+    if (teacher) {
+      return {
+        _id: teacher._id.toString(),
+        first_name: teacher.first_name,
+        last_name: teacher.last_name,
+        cedula: teacher.cedula,
+        age: teacher.age,
+      };
+    } else {
+      throw new Error("Teacher not found");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+module.exports = {
+  teacherPost,
+  teacherGet,
+  teacherPatch,
+  teacherDelete,
+  teacherGetById
+};
